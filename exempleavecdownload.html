@@ -1,0 +1,438 @@
+<html>
+    <head>
+      <meta charset='utf-8' />
+      <title>Getting started with JSON Form</title>
+      <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-auth.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-database.js"></script> 
+      <script src="https://unpkg.com/jquery"></script>
+      <script src="https://unpkg.com/survey-jquery@1.8.44/survey.jquery.min.js"></script>
+      <link href="https://unpkg.com/survey-knockout@1.8.44/modern.css" type="text/css" rel="stylesheet"/>
+      <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+      <script src="https://unpkg.com/downloadjs@1.4.7"></script>
+    </head>
+    <body>
+        <h2><!--Nom du Formulaire--></h2>
+        <div id="surveyElement" style="display:inline-block;width:100%;"></div>
+        <div id="surveyResult"></div>
+        <script type="text/javascript">
+//-------------------------FIREBASE----------------------------------------------------------------------------------------------------
+            var firebaseConfig = {
+                apiKey: "AIzaSyADBYpzzRxIwztWgPfzGcGIiiZNbnXNcWw",
+                authDomain: "json-firebase-test.firebaseapp.com",
+                databaseURL: "https://json-firebase-test-default-rtdb.europe-west1.firebasedatabase.app",
+                projectId: "json-firebase-test",
+                storageBucket: "json-firebase-test.appspot.com",
+                messagingSenderId: "60521482657",
+                appId: "1:60521482657:web:da5254178990765709e3e0"
+            };
+
+            firebase.initializeApp(firebaseConfig);
+
+
+//-------------------------PDFLIB----------------------------------------------------------------------------------------------------
+            const { PDFDocument, StandardFonts, rgb } = PDFLib
+
+            async function fillForm(result) {
+                // Fetch the PDF with form fields
+                // résult contien les données envoyés dans le formulaire json
+                // lien du pdf (web ou local) (préférence web) (préférence lien wordpress opinaka)
+                const formUrl = 'https://cdn.paris.fr/paris/2020/11/19/823a270a7436cba3968ac6340ae63213.pdf'
+                
+                const formPdfBytes = await fetch(formUrl).then(res => res.arrayBuffer())
+
+                // Load a PDF with form fields
+                const pdfDoc = await PDFDocument.load(formPdfBytes)
+
+                // Get the form containing all the fields
+                const form = pdfDoc.getForm()
+
+                // affichage des champs dans la console navigateur
+                // clic droit, inspecter l'élément, onglet console
+                const fields = form.getFields();
+                console.log("NOM DES CHAMPS :");
+                fields.forEach(field => {
+                    const name = field.getName();
+                    console.log(name);
+                })
+
+                 //récupérage des champs
+                 //const "nom variable" = form.getField('"nom champ"');
+                const nom1 = form.getField('Nom de naissance');
+                const nom2 = form.getField('Nom d\'usage');
+                const prenom = form.getField('Liste des prénoms');
+                const journ = form.getField('Jour naissance');
+                const moisn = form.getField('Champ de texte 127');
+                const anneen = form.getField('Année naissance');
+                const genreh = form.getField('Case à cocher 60');
+                const genref = form.getField('Case à cocher 59');
+                const prosanteoui = form.getField('Case à cocher 61');
+                const prosantenon = form.getField('Case à cocher 62');
+                const secu = form.getField('Num sécurité sociale');
+                const telmobil = form.getField('N° Tel');
+                const telfixe = form.getField('N° Fixe');
+                const email1 = form.getField('Courriel');
+                const email2 = form.getField('Champ de texte 128');
+                const email3 = form.getField('Mail');
+//cases
+                const motif1 = form.getField('Case à cocher 14');
+                const motif2 = form.getField('Case à cocher 16');
+                const motif3 = form.getField('Case à cocher 17');
+                const motif4 = form.getField('Case à cocher 18');
+                const motif5 = form.getField('Case à cocher 19');
+                const motif6 = form.getField('Case à cocher 20');
+                const motif7 = form.getField('Case à cocher 21');
+                const motif8 = form.getField('Case à cocher 22');
+                const motif21 = form.getField('Case à cocher 6');
+                const motif22 = form.getField('Case à cocher 9');
+                const motif23 = form.getField('Case à cocher 10');
+                const motif24 = form.getField('Case à cocher 11');
+                const motif25 = form.getField('Case à cocher 12');
+                const motif26 = form.getField('Case à cocher 13');
+
+                const h1 = form.getField('Case à cocher 43');
+                const h2 = form.getField('Case à cocher 44');
+                const h3 = form.getField('Case à cocher 52');
+                const h4 = form.getField('Case à cocher 66');
+                const h5 = form.getField('Case à cocher 68');
+                const h6 = form.getField('Case à cocher 69');
+
+              
+
+//Adresse
+                const numero = form.getField('Adresse');
+                const voie = form.getField('Adressse Voie');
+                const complement = form.getField('Adressse complément');
+                const codepostal = form.getField('Adressse Code');
+                const commune = form.getField('Champ de texte 63');
+                const codetemp =form.getField ('Commune');
+                const pays = form.getField ('Champ de texte 68');
+                const rpps1 = form.getField('RPPS 1'); 
+                const rpps2 = form.getField('RPPS 2');
+                const rpps3 = form.getField('RPPS 3');
+                const paysdepart = form.getField('Pays');
+                const remarques = form.getField('Remarques');
+
+                 //remplissage des champs 
+                 //result.data.nom du champ : "name"
+                nom1.setText(result.data.nomdn);
+                nom2.setText(result.data.nomdu);
+                prenom.setText(result.data.prenom);
+                journ.setText(result.data.journ);
+                moisn.setText(result.data.moisn);
+                anneen.setText(result.data.anneen);
+                secu.setText(result.data.secu);
+                telmobil.setText(result.data.telmobile);
+                telfixe.setText(result.data.telfixe);
+                email1.setText(result.data.email1);
+                email2.setText(result.data.email2);
+                email3.setText(result.data.email3);
+//Adresse
+                numero.setText(result.data.numero);
+                voie.setText(result.data.voie);
+                complement.setText(result.data.complement);
+                codepostal.setText(result.data.codepostal);
+                commune.setText(result.data.commune);
+                pays.setText(result.data.pays);
+                codetemp.setText(result.data.codepostaltemp);
+                rpps1.setText(result.data.medecin);
+                rpps2.setText(result.data.codepmedecin);
+                rpps3.setText(result.data.rpps);
+                paysdepart.setText(result.data.paysdedepart);
+                remarques.setText(result.data.remarques)
+                
+
+                 //if mon champ est coché dans le formulaire json je check la case correspondante dans le pdf :
+                if(result.data.genre.includes("Femme")){
+                genref.check();
+                };
+                if(result.data.genre.includes("Homme")){
+                genreh.check();
+                };
+                if(result.data.prosante){
+                    console.log("test")
+                    prosanteoui.check()} 
+                else {prosantenon.check()}
+                 
+
+                if(result.data.raisonsdepistage.includes("Je dispose d\’une prescription médicale pour réaliser un test de dépistage de la COVID-19")){
+                motif1.check()
+                };
+                if(result.data.raisonsdepistage.includes("J\’ai des symptômes(perte de l\’odorat,perte du goût,fièvre,toux,...) et ils sont apparus :")){
+                motif2.check()
+                };
+                if(result.data.raisonsdepistage.includes("J\’ai été appelé par un enquêteur sanitaire")){
+                motif3.check()
+                };
+                if(result.data.raisonsdepistage.includes("Je suis un professionnel intervenant dans le système de santé")){
+                motif4.check()
+                };
+                if(result.data.raisonsdepistage.includes("J\’ai fréquenté un endroit ou une personne à risque (rassemblement collectif,etc.)")){
+                motif5.check()
+                };
+                if(result.data.raisonsdepistage.includes("Je dois bientôt rentrer à l\’hopital, en EHPAD ou en établissement médico-social")){
+                motif6.check()
+                };
+                if(result.data.raisonsdepistage.includes("Je prends prochainement un transport pour lequel un test est exigé")){
+                motif7.check()
+                };
+                if(result.data.raisonsdepistage.includes("Je souhaite me faire dépister de ma propre initiative")){
+                motif8.check()
+                };
+                if(result.data.raisonsdepistage.includes("Moins de 24h avant le prélèvement")){
+                motif21.check()
+                };
+                if(result.data.raisonsdepistage.includes("2,3 ou 4 jours avant le prélèvement")){
+                motif22.check()
+                };
+                if(result.data.raisonsdepistage.includes("5,6 ou 7 jours avant le prélèvement")){
+                motif23.check()
+                };
+                if(result.data.raisonsdepistage.includes("Entre 8 et 14 jours avant le prélèvement")){
+                motif24.check()
+                };
+                if(result.data.raisonsdepistage.includes("Entre 15 et 28 jours avant le prélèvement")){
+                motif25.check()
+                };
+                if(result.data.raisonsdepistage.includes("Plus de quatre semaines avant le prélèvement")){
+                motif26.check()
+                };
+
+
+
+                if(result.data.hebergement.includes("Dans un hébergement individuel privé")){
+                h1.check()
+                };
+                if(result.data.hebergement.includes("En milieu carcéral")){
+                h2.check()
+                };
+                if(result.data.hebergement.includes("Je ne sais pas ou je ne souhaite pas repondre")){
+                h3.check()
+                };
+                if(result.data.hebergement.includes("Dans une autre structure d\'hébergement collectif (caserne, foyer,..)")){
+                h4.check()
+                };
+                if(result.data.hebergement.includes("à l\'hopital")){
+                h5.check()
+                };
+                if(result.data.hebergement.includes("En EHPAD")){
+                h6.check()
+                };
+
+
+                // Serialize the PDFDocument to bytes (a Uint8Array)
+                const pdfBytes = await pdfDoc.save();
+                // result.data.nom + "pdf-lib_creation_example.pdf" = nom du fichier créé
+                download(pdfBytes, result.data.nom + "pdf-lib_creation_example.pdf", "application/pdf");
+            }
+
+//-------------------------SURVEYJS----------------------------------------------------------------------------------------------------
+            Survey.StylesManager.applyTheme("modern");
+            var json = {
+                questions: [
+               {
+                name :'nomdn',
+                title :'Nom de naissance :',
+                type : 'text',
+                //       isRequired :true,         
+               },{               
+                name :'nomdu',
+                title :'Nom d\'usage :',
+                type : 'text',      
+               },{
+                name :'prenom',
+                title :'1er Prénom :',
+                type : 'text',
+                isRequired :true,       
+               },{
+                name :'journ',
+                title :'Date de naissance : Jour :',
+                type : 'text',
+                isRequired :true,       
+               },{
+                name :'moisn',
+                title :'Mois :',
+                type : 'text',
+                isRequired :true,       
+               },{
+                name :'anneen',
+                title :'Année :',
+                type : 'text',
+                isRequired :true,       
+               },{
+                name :'genre',
+                title :'Genre :',
+                type : 'radiogroup',
+                isRequired :true,
+                choices :[
+                'Homme','Femme',
+                ]       
+               },{
+                name :'prosante',
+                title :'Je suis un professionnel intervenant dans le système de santé :',
+                type : 'boolean',
+                isRequired :true,
+                labelTrue : 'Oui',   
+                labelFalse : 'Non',    
+               },{
+                name :'secu',
+                title :'Numéro de sécurité sociale :',
+                type : 'text',
+                minLenght : 15,
+                maxLenght : 15,
+                isRequired :true,       
+               },{
+                name :'telmobile',
+                title :'N° téléphone mobile : ',
+                type : 'text',
+                isRequired :true,       
+               },{
+                name :'telfixe',
+                title :'N° téléphone fixe:',
+                type : 'text',
+               },{
+                name :'email1',
+                title :'Courriel : ',
+                type : 'text',
+                isRequired :true,       
+               },{
+                name :'email2',
+                title :'@ ',
+                type : 'text',
+                isRequired :true,       
+               },{
+                name :'email3',
+                title :'.',
+                type : 'text',
+                isRequired :true,       
+               },{
+                name :'raisonsdepistage',
+                type: 'checkbox',
+
+                title: 'La ou les raisons pour laquelle je me fais dépister',
+                isRequired: true,
+                choices: [
+                'Je dispose d\’une prescription médicale pour réaliser un test de dépistage de la COVID-19',
+                'J\’ai des symptômes(perte de l\’odorat,perte du goût,fièvre,toux,...) et ils sont apparus :',
+                'Moins de 24h avant le prélèvement',
+                '2,3 ou 4 jours avant le prélèvement',
+                '5,6 ou 7 jours avant le prélèvement',
+                'Entre 8 et 14 jours avant le prélèvement',
+                'Entre 15 et 28 jours avant le prélèvement',
+                'Plus de quatre semaines avant le prélèvement',
+                'J\’ai été appelé par un enquêteur sanitaire',
+                'J\’ai reçu une notification de TousAntiCovid',
+                'Je suis un professionnel intervenant dans le système de santé',
+                'J\’ai fréquenté un endroit ou une personne à risque (rassemblement collectif,etc.)',
+                'Je dois bientôt rentrer à l\’hopital, en EHPAD ou en établissement médico-social',
+                'Je prends prochainement un transport pour lequel un test est exigé',
+                'Je souhaite me faire dépister de ma propre initiative',
+               ]
+               },{
+                name :'hebergement',
+                type: 'checkbox',
+
+                title: 'Je suis actuellement hébergé.e:',
+                isRequired: true,
+                colCount: 2,
+                choices: [
+                'Dans un hébergement individuel privé',
+                'à l\'hopital',
+                'En EHPAD',
+                'En milieu carcéral',
+                'Dans une autre structure d\'hébergement collectif (caserne, foyer,..)',
+                'Je ne sais pas ou je ne souhaite pas repondre'
+               ]
+               },{
+                name :'numero',
+                title :'Mon adresse de résidence principale : numéro :',
+                type : 'text',
+                isRequired :true,
+               },{
+                name :'voie',
+                title :'Voie',
+                type : 'text',
+                isRequired :true,
+               },{
+                name :'complement',
+                title :'Complément',
+                type : 'text',
+               },{
+                name :'telfixe',
+                title :'N° téléphone fixe',
+                type : 'text',
+                isRequired :true,
+               },{
+                name :'codepostal',
+                title :'Code Postal',
+                type : 'text',
+                isRequired :true,
+               },{
+                name :'commune',
+                title :'Commune',
+                type : 'text',
+                isRequired :true,
+               },{
+                name :'pays',
+                title :'Pays',
+                type : 'text',
+                isRequired :true,
+               },{
+                name :'codepostaltemp',
+                title :'Si je réside actuellement dans un autre département que celui de ma résidence principale (ou que je le prévois dans les 7 prochains jours): Code postal du lieu de résidence temporaire :',
+                type : 'text',
+               },{
+                name :'medecin',
+                title :'Pour la transmission de vos résultats à votre médecin traitant : Prénom et nom de votre médecin traitant ou prescripteur:',
+                type : 'text',
+                isRequired :true,
+               },{
+                name :'codepmedecin',
+                title :'Code postal de votre médecin traitant ou prescripteur:',
+                type : 'text',
+               isRequired :true,
+               },{
+                name :'rpps',
+                title :'N° RPPS de votre médecin traitant ou prescripteur (si possible,11 chiffres, généralement affichés sur les ordonnances et affichés sur https://annuaire.sante.fr/)',
+                type : 'text',
+               },{
+                name :'paysdedepart',
+                title :'Si je reviens d\’un voyage dans un pays étranger dans les 14 derniers jours : Pays de départ :',
+                type : 'text',
+               },{
+                name :'remarques',
+                title :'Avez-vous  des  remarques  particulières  à  porter  à  la  connaissance  du  professionnel  de  santé  qui  va  réaliser le test ?',
+                type : 'text',
+               }
+
+    ]
+};
+            //[...] fin de votre formulaire
+
+            window.survey = new Survey.Model(json);
+
+            survey.onComplete.add(function (result) {
+                    document.querySelector('#surveyResult')
+                        .textContent = "Result JSON:\n" + JSON.stringify(result.data, null, 3);
+
+                        const dirName = 'FormsSurveyjson/';
+
+                        //WRITE
+                        const id = String(Number(Date.now())) + String(Math.floor(Math.random() * 100));
+                        firebase.database().ref(dirName + id).set(result.data);
+                        console.log('Envoyé!');
+
+                        //READ
+                        firebase.database().ref(dirName + id).on('value', function(snapshot){
+                            console.log(snapshot.val());
+                        });
+
+                        //PDF
+                        fillForm(result);
+                        
+                });
+
+            $("#surveyElement").Survey({model: survey});
+        </script>
+    </body>
+</html>
